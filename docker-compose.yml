@@ -1,0 +1,31 @@
+webcamclient:
+    image: php
+    volumes:
+        - ./:/usr/share/nginx/html
+    working_dir: "/usr/share/nginx/html"
+    labels:
+        traefik.backend : "webcamclient"
+        traefik.enable : "true"
+        traefik.frontend.rule : "Host : {{WEBAPP_HOSTNAME}}"
+        traefik.frontend.entryPoints : "http,https"
+        traefik.port : "80"
+        traefik.frontend.passHostHeader : "true"
+    expose:
+        - "80"
+    entrypoint: "php -S 0.0.0.0:80 -t ./"
+
+webcamserver:
+    image: node:13
+    volumes:
+        - ./:/app
+    working_dir: "/app"
+    labels:
+        traefik.backend: "ws"
+        traefik.enable: "true"
+        traefik.frontend.rule: "Host : {{WEBSOCKET_HOSTNAME}}"
+        traefik.frontend.entryPoints: "http,https"
+        traefik.port: "8080"
+        traefik.frontend.passHostHeader: "true"
+    expose:
+        - "8080"
+    entrypoint: "node server.js"
