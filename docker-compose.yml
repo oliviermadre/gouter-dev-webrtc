@@ -8,11 +8,11 @@ webcamclient:
         traefik.enable : "true"
         traefik.frontend.rule : "Host : {{WEBAPP_HOSTNAME}}"
         traefik.frontend.entryPoints : "http,https"
-        traefik.port : "80"
+        traefik.port : "{{WEBAPP_PORT}}"
         traefik.frontend.passHostHeader : "true"
     expose:
-        - "80"
-    entrypoint: "php -S 0.0.0.0:80 -t ./"
+        - "{{WEBAPP_PORT}}"
+    entrypoint: "php -S 0.0.0.0:{{WEBAPP_PORT}} -t ./"
 
 webcamserver:
     image: node:13
@@ -24,8 +24,8 @@ webcamserver:
         traefik.enable: "true"
         traefik.frontend.rule: "Host : {{WEBSOCKET_HOSTNAME}}"
         traefik.frontend.entryPoints: "http,https"
-        traefik.port: "8080"
+        traefik.port: "{{WEBSOCKET_PORT}}"
         traefik.frontend.passHostHeader: "true"
     expose:
-        - "8080"
+        - "{{WEBSOCKET_PORT}}"
     entrypoint: "node server.js"

@@ -1,4 +1,4 @@
-const ws = new WebSocket('wss://ws.olivier-madre.info')
+const ws = new WebSocket('wss://{{WEBSOCKET_HOSTNAME}}')
 const clog = function(msg) {
     console.log(msg);
     let c = document.querySelector("#console");
