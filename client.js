@@ -1,4 +1,11 @@
+let connection = null
+let name = null
+let remoteUsername = null
+let localStream = null
+let inCall = false
+
 const ws = new WebSocket('wss://{{WEBSOCKET_HOSTNAME}}')
+
 const clog = function(msg) {
     console.log(msg);
     let c = document.querySelector("#console");
@@ -42,12 +49,7 @@ ws.onmessage = msg => {
     }
 }
 
-let connection = null
-let name = null
-let remoteUsername = null
-let localStream = null;
-let inCall = false;
-let indexUsedVideoSource = null;
+
 
 const sendMessage = message => {
     if (remoteUsername) {
@@ -70,12 +72,7 @@ document.querySelector('button#login').addEventListener('click', event => {
     sendMessage({ type: 'login', username: username })
 })
 
-document.querySelector('#toggle-video').addEventListener('click', event => {
-    startLocalStream();
-});
-
 function getDevices() {
-    // AFAICT in Safari this only gets default devices until gUM is called :/
     return navigator.mediaDevices.enumerateDevices();
 }
 
@@ -107,19 +104,6 @@ function getStream() {
 
 getStream().then(getDevices).then(gotDevices);
 
-function findNextVideoDeviceId() {
-    let deviceId = null;
-    for (let i = 0; i < window.deviceInfos.length; i++) {
-        let device = window.deviceInfos[i];
-        if (device.kind == "videoinput") {
-            indexUsedVideoSource = i;
-            return device.deviceId;
-        }
-    }
-    indexUsedVideoSource = null;
-    return undefined;
-}
-
 const handleLogin = async success => {
     if (success === false) {
         alert('😞 Username already taken')
@@ -133,9 +117,8 @@ const handleLogin = async success => {
 
 const startLocalStream = async () => {
     try {
-        let videoSource = indexUsedVideoSource ? window.deviceInfos[indexUsedVideoSource].deviceId : findNextVideoDeviceId();
         localStream = await navigator.mediaDevices.getUserMedia({
-            video: { deviceId: (videoSource && videoSource !== true) ? { exact: videoSource } : true},
+            video: true,
             audio: true
         })
     } catch (error) {

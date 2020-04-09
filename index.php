@@ -36,7 +36,6 @@
         <input id="username-to-call" placeholder="Username to call" />
         <button id="call">Call</button>
         <button id="close-call">Close call</button>
-        <button id="toggle-video">Toggle video source</button>
     </div>
 </div>
 
